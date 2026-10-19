@@ -1,60 +1,60 @@
-História 1
-Descrição: Como monitor, eu quero poder marcar meus horários disponiveis para que os alunos possam reservar para mim poder atende-los.
+# Histórias de Usuário - Sistema de Agendamento de Monitorias
 
-Justificativa: Prioridade Alta, pois esse é a base do sistema, para os alunso poderem reservar precisa cadastrar os horários.
+## História 1
+**Descrição:** Como monitor, eu quero cadastrar meus horários disponíveis para que os alunos possam reservar atendimentos.
+**Justificativa:** Prioridade Alta. É a funcionalidade base do sistema; sem a oferta de horários pelos monitores, não há como realizar agendamentos.
+**Trecho do E-mail:** "No início do semestre, cada monitor informa os horários em que pode atender..."
 
-Trecho: "No início do semestre, cada monitor informa os horários em que pode atender, ..."
+**Critérios de Aceitação:**
+1. Dado que o monitor acessa o cadastro, quando ele seleciona um dia e horário de início/fim, o sistema deve registrar a disponibilidade.
+2. Dado que o monitor selecionou os horários, o sistema deve dividi-los automaticamente em blocos de 30 minutos.
+3. Dado que o monitor tente salvar uma disponibilidade sem preencher os campos obrigatórios, o sistema deve exibir uma mensagem de erro e impedir o salvamento.
 
-Critérios:
-1. Dado que o monitor quer cadastrar disponibilidade, quando ele acessa o sistema deve escolher um dia da semana, horário de inicio e fim que estará disponivel.
-2. Dado que o monitor selecionou os horários, o sistema deve dividir os horários em blocos de 30 minutos para cumprir a ideia de 30 minutos por atendimento.
-3. Dado que o monitor acabe esquecendo de colocar horário em alguma semana, deixando em branco, deve exibir um erro de campo obrigatório e impedir o salvamento.
+---
 
-História 2
-Descrição: Como aluno, eu quero poder ver os horários de monitoria que batam com o meu cronograma.
+## História 2 (HISTÓRIA ESCOLHIDA PARA IMPLEMENTAÇÃO)
+**Descrição:** Como aluno, eu quero visualizar horários livres e reservar um atendimento de 30 minutos na disciplina desejada para garantir meu suporte nos estudos.
+**Justificativa:** Prioridade Alta. Esta é a funcionalidade principal do sistema indicada pela coordenação ("Se a reserva de horários funcionar, já ajuda muito").
+**Trecho do E-mail:** "A ideia é que o aluno escolha a disciplina, veja os horários livres e reserve um atendimento."
 
-Justificativa: Prioridade alta, esse sistema de verificação de horários permite o aluno de se organizar para receber um atendimento exclusivo.
+**Critérios de Aceitação:**
+1. Dado que o aluno pesquisa por uma disciplina, o sistema deve listar apenas os horários com status livre.
+2. Dado que o aluno seleciona um horário vago e confirma a reserva, o sistema deve alterar o status do horário para "Reservado" e vinculá-lo ao aluno.
+3. Dado que o aluno tenta reservar um horário que já foi ocupado por outro usuário, o sistema deve recusar o agendamento e lançar uma exceção/mensagem de erro.
+4. Dado que o aluno tenta reservar mais de 2 horários na mesma disciplina na mesma semana, o sistema deve bloquear a operação e informar que o limite semanal foi atingido.
 
-Trecho:"A ideia é que o aluno escolha a disciplina, veja os horários livres ..."
+---
 
-Critérios:
-1. Dado que o aluno pesquisa por uma matéria deve aparecer todos os horários disponiveis daquela disciplina.
-2. Dado que o aluno pesquise por uma matéria e não tenha nenhum horário disponivel deve aparecer uma mensagem "Sem horário disponivel." 
-3. Dado que o aluno visualiza os resultados da busca e selecione uma matéria, o sistema deve exibir todas as informações necessárias, nome do monitor, dia da semana e hora do atendimento.
+## História 3
+**Descrição:** Como monitor, eu quero poder cancelar um horário de atendimento previamente cadastrado para evitar que alunos compareçam presencialmente sem que eu esteja disponível.
+**Justificativa:** Prioridade Média. Resolve o problema de desencontro citado no e-mail, mas depende da existência prévia do cadastro e reserva de horários.
+**Trecho do E-mail:** "...mas às vezes precisa cancelar por causa de prova. Os alunos reclamam que só descobrem o cancelamento quando chegam na sala."
 
-História 3
-Descrição:Como aluno, eu quero poder reservar horário de antendimento com um monitor.
+**Critérios de Aceitação:**
+1. Dado que o monitor possui horários livres cadastrados, ao selecionar um bloco e confirmar a remoção, o horário deve desaparecer da lista pública de buscas.
+2. Dado que o monitor cancela um horário que já possui reserva de um aluno, o sistema deve alterar o status para "Cancelado" e disparar a notificação/aviso ao aluno.
+3. Dado que um horário é cancelado pelo monitor, qualquer tentativa de reserva posterior por parte de um aluno deve ser bloqueada.
 
-Justificativa: Prioridade alta, para os alunos poderem reservar os horários que os monitores estão disponiveis, resolvendo o grande problema de desencontro.
+---
 
-Trecho:"... e reserve um atendimento."
+## História 4
+**Descrição:** Como coordenação, eu quero gerar um relatório mensal restrito com o total de horas atendidas por cada monitor para realizar o pagamento correto das bolsas.
+**Justificativa:** Prioridade Média. É essencial para a gestão financeira do curso, porém depende do registro dos atendimentos realizados no sistema.
+**Trecho do E-mail:** "A coordenação precisa de um relatório mensal com as horas atendidas por cada monitor, porque isso conta para o pagamento da bolsa. Essas informações de bolsa não podem ficar visíveis para todo mundo."
 
-Critérios:
-1. Dado que o aluno poderá visualizar os blocos de disponibilidade de atendimento, quando ele clicar em reservar o horário selecionado deverá passar para "Reservado" e ser vinculado ao aluno.
-2. Dado que o aluno já reservou 3 horários na semana em uma certa disciplina o sistema deve bloquear de fazer mais um reserva naquela disciplina naquela semana e avisar sobre o limite.
-3. Dado que dois alunos tentem reservar o mesmo horário simultâneamente, quando o sistema processar as solicitações a reserva vai apenas para o primeiro que o sistema processar.
+**Critérios de Aceitação:**
+1. Dado que o usuário da coordenação solicita o relatório mensal, o sistema deve somar todas as horas de atendimentos concluídos por cada monitor no mês.
+2. Dado que um usuário comum (aluno ou monitor) tente acessar o relatório de bolsas, o sistema deve negar o acesso e exibir mensagem de permissão negada.
+3. Dado que o relatório mensal é gerado, ele deve listar o nome do monitor, disciplina e o total de horas contabilizadas.
 
-História 4
-Descrição:Como monitor, eu quero poder cancelar um horário caso necessário, para evitar confusão de um aluno reservar um horário e eu não estar na sala.
+---
 
-Justificativa: Prioridade média, resolve um problema citado no e-mail, mas não é tão necessário quanto os sistemas de horários e reservas.
+## História 5
+**Descrição:** Como professor, eu quero visualizar relatórios dos tópicos e conteúdos que geram mais dúvidas para reforçar esses pontos em sala de aula.
+**Justificativa:** Prioridade Baixa. É um recurso analítico útil para o ensino, mas não impede o funcionamento operacional do agendamento de monitorias.
+**Trecho do E-mail:** "Os professores das disciplinas gostariam de saber quais conteúdos geram mais dúvidas, para reforçar em aula."
 
-Trecho:"...mas às vezes precisa cancelar por causa de prova. Os alunos reclamam que só descobrem o cancelamento quando chegam na sala."
-
-Critérios: 
-1. Dado que o monitor tem um horário cadastrados ele poderá selecionar um bloco e remove-lo clicando em "Remover", o horário deve desaparecer da lista de horários disponives.
-2. Dado que o monitor precisa remover um bloco e ele já estiver reservado, o monitor poderá clicar em "Cancelar" logo o atendimento será cancelado, com isso avisando o aluno que a reserva foi cancelada.
-3. Dado que o monitor precise remover um horário, o mesmo deve desaparecer imediatamente das buscas, sem a necessidade de atualizar manualmente, evitando uma reserva fantasma.
-
-História 5
-Descrição:Como professor, eu quero poder ter acesso quais assuntos/tópicos os alunso estão tendo maior dificuldade na minha matéria.
-
-Justificativa: Prioridade baixa, caso muitos alunos estejam tendo dificuldade no mesmo tópico, posso alterar a forma de ensinar em sala, mas o sistema pode funcionar perfeitamente sem esse relatório.
-
-Trecho:"Os professores das disciplinas gostariam de saber quais conteúdos geram mais 
-dúvidas, para reforçar em aula."
-
-Critérios:
-1. Dado que o professor acesse o sistema, poderá ter acesso aos relatórios, podendo selecionar qual semana ou mês quer ver relatório.
-2. Dado que os alunos/monitores não digitem nada no motivo/tema do agendamento, não se deve computar dados vazios para o relatório do professor.
-3. Dado que o relatório do professor é gerado, quando o sistema busca as informações, então ele deve exibir apenas os tópicos de dúvidas e nunca exibir as horas ou os pagamentos de bolsa dos monitores.
+**Critérios de Aceitação:**
+1. Dado que o professor acessa a área de relatórios, ele pode filtrar os tópicos de dúvidas cadastrados por disciplina e período.
+2. Dado que existam agendamentos sem especificação de tema/dúvida, o sistema não deve computar dados vazios no relatório.
+3. Dado que o relatório de conteúdos do professor é exibido, ele não deve conter nenhuma informação sobre valores de bolsa ou horas para pagamento da coordenação.
