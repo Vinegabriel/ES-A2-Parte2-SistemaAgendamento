@@ -15,7 +15,8 @@ Para atender à História 2 sem dependência de entradas manuais (`input`) duran
   * `id_horario`: Identificador único da vaga.
   * `disciplina`: Nome da matéria (ex: Cálculo, Física, POO, ED).
   * `monitor`: Nome do monitor responsável pelo atendimento.
-  * `dia_semana`: Dia do atendimento (ex: "Segunda-feira").
+  * `dia_semana`: Dia da semana do atendimento (ex: "Segunda-feira").
+  * `data_atendimento`: Data do atendimento, usada para identificar a semana da reserva.
   * `hora_inicio`: Horário de início do bloco.
   * `status`: Estado atual do bloco ("Livre", "Reservado" ou "Cancelado").
   * `aluno_reservado`: Nome do aluno que realizou a reserva (inicialmente `None`).
@@ -23,11 +24,11 @@ Para atender à História 2 sem dependência de entradas manuais (`input`) duran
 ### 2. Classe `SistemaMonitoria`
 * **Responsabilidade:** Gerenciar o repositório de horários em memória e aplicar todas as regras de negócio de consulta e reserva.
 * **Métodos Principais:**
-  * `cadastrar_horario(id_horario, disciplina, monitor, dia_semana, hora_inicio, tema=None)`: Adiciona um novo bloco disponível ao sistema.
+  * `cadastrar_horario(id_horario, disciplina, monitor, dia_semana, hora_inicio, data_atendimento)`: Adiciona um novo bloco disponível ao sistema.
   * `listar_horarios_livres(disciplina)`: Filtra e retorna apenas os blocos que possuem o status "Livre" para a disciplina pesquisada.
   * `reservar_horario(id_horario, aluno, disciplina)`: Valida as regras de negócio antes de confirmar o agendamento:
     1. Verifica se o bloco informado existe e se o seu status está como "Livre".
-    2. Contabiliza quantas reservas o mesmo aluno já possui na mesma disciplina e semana.
+    2. Contabiliza quantas reservas o mesmo aluno já possui na mesma disciplina e semana ISO, calculada a partir da data do atendimento.
     3. Se o horário estiver livre e o aluno tiver menos de 2 reservas ativas na disciplina, atualiza o status do bloco para "Reservado" e vincula o nome do aluno.
     4. Caso o horário esteja ocupado/cancelado ou o aluno já tenha atingido o limite máximo de 2 reservas semanais na disciplina, lança uma exceção do tipo `ValueError`.
 
