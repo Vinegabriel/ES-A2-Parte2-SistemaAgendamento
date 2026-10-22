@@ -1,13 +1,16 @@
+from datetime import date
+
 class Horario:
     """
     Representa um bloco individual de atendimento de 30 minutos.
     """
-    def __init__(self, id_horario, disciplina, monitor, dia_semana, hora_inicio):
+    def __init__(self, id_horario, disciplina, monitor, dia_semana, hora_inicio, data_atendimento):
         self.id_horario = id_horario
         self.disciplina = disciplina
         self.monitor = monitor
         self.dia_semana = dia_semana
         self.hora_inicio = hora_inicio
+        self.data_atendimento = data_atendimento
         self.status = "Livre"  # Estados possíveis: "Livre", "Reservado" ou "Cancelado"
         self.aluno_reservado = None
 
@@ -19,11 +22,14 @@ class SistemaMonitoria:
     def __init__(self):
         self.horarios = []
 
-    def cadastrar_horario(self, id_horario, disciplina, monitor, dia_semana, hora_inicio):
+    def cadastrar_horario(self, id_horario, disciplina, monitor, dia_semana, hora_inicio, data_atendimento):
         """
         Cadastra um novo bloco de atendimento no sistema.
         """
-        horario = Horario(id_horario, disciplina, monitor, dia_semana, hora_inicio)
+        if not isinstance(data_atendimento, date):
+            raise TypeError("A data do atendimento deve ser informada como [YYYY-MM-DD].")
+
+        horario = Horario(id_horario, disciplina, monitor, dia_semana, hora_inicio, data_atendimento)
         self.horarios.append(horario)
         return horario
 
@@ -40,7 +46,7 @@ class SistemaMonitoria:
         """
         Executa a reserva de um horário para o aluno validando as regras de negócio.
         - Lança ValueError se o horário não existir ou não estiver 'Livre'.
-        - Lança ValueError se o aluno já tiver 2 reservas ativas na mesma disciplina.
+        - Lança ValueError se o aluno já tiver 2 reservas ativas na mesma disciplina e semana.
         """
         # Busca o horário informado
         horario_encontrado = None
@@ -52,16 +58,20 @@ class SistemaMonitoria:
         if not horario_encontrado:
             raise ValueError("Horário não encontrado.")
 
+        if horario_encontrado.disciplina != disciplina:
+            raise ValueError("O horário não pertence à disciplina informada.")
+
         # Valida se o horário está com status Livre
         if horario_encontrado.status != "Livre":
             raise ValueError(f"Não é possível reservar um horário com status '{horario_encontrado.status}'.")
 
-        # Conta quantas reservas o aluno já possui na mesma disciplina
+        semana_horario = horario_encontrado.data_atendimento.isocalendar()[:2]
         reservas_aluno = sum(
             1 for h in self.horarios 
             if h.disciplina == disciplina 
             and h.aluno_reservado == aluno 
             and h.status == "Reservado"
+            and h.data_atendimento.isocalendar()[:2] == semana_horario
         )
 
         # Valida o limite de até 2 reservas por disciplina na semana
